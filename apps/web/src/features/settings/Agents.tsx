@@ -346,11 +346,11 @@ export function Agents(props: {
                   </p>
                 </div>
                 <Button
-                  variant="cta"
+                  variant="neutral"
                   size="sm"
                   onClick={() => setCreating(true)}
                 >
-                  <PlusIcon />
+                  <PlusIcon class="size-3 touch:size-6 shrink-0 pointer-events-none" />
                   Add agent
                 </Button>
               </div>
@@ -523,7 +523,7 @@ function AgentRow(props: {
               aria-label={`Message ${props.agent.name}`}
               onClick={onMessage()}
             >
-              <ChatIcon />
+              <ChatIcon class="size-3 touch:size-6 shrink-0 pointer-events-none" />
               Message
             </Button>
           )}
@@ -537,7 +537,7 @@ function AgentRow(props: {
               aria-label={`Edit ${props.agent.name}`}
               onClick={onEdit()}
             >
-              <PencilIcon />
+              <PencilIcon class="size-3.5 touch:size-6 shrink-0 pointer-events-none" />
             </Button>
           )}
         </Show>
@@ -551,7 +551,7 @@ function AgentRow(props: {
               aria-label={`Delete ${props.agent.name}`}
               onClick={onDelete()}
             >
-              <TrashIcon />
+              <TrashIcon class="size-3.5 touch:size-6 shrink-0 pointer-events-none" />
             </Button>
           )}
         </Show>
@@ -622,12 +622,12 @@ function AgentDeleteDialog(props: {
           </Button>
           <Button
             type="button"
-            variant="strong"
+            variant="secondary"
             size="sm"
             disabled={props.pending}
             onClick={props.onConfirm}
           >
-            <TrashIcon />
+            <TrashIcon class="size-3 touch:size-6 shrink-0 pointer-events-none" />
             {props.pending ? 'Deleting…' : 'Delete agent'}
           </Button>
         </Panel.Footer>
@@ -864,7 +864,7 @@ function AgentEditorPage(props: {
                   </p>
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                     size="sm"
                     aria-label={`Retry models for ${selectedHarness()?.name ?? 'this runtime'}`}
                     onClick={() =>
@@ -1086,7 +1086,8 @@ function AgentEditorPage(props: {
           description="Name it, tell it what to do, and pick where it runs."
           actions={
             <Button variant="ghost" size="sm" onClick={close} disabled={busy()}>
-              <ArrowLeftIcon /> Back
+              <ArrowLeftIcon class="size-3 touch:size-6 shrink-0 pointer-events-none" />{' '}
+              Back
             </Button>
           }
         >
@@ -1150,12 +1151,12 @@ function AgentEditorPage(props: {
                   />
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                     size="sm"
                     disabled={busy()}
                     onClick={() => avatarInputRef?.click()}
                   >
-                    <UploadIcon />
+                    <UploadIcon class="size-3 touch:size-6 shrink-0 pointer-events-none" />
                     {uploadingAvatar() ? 'Uploading…' : 'Upload'}
                   </Button>
                 </div>
@@ -1529,7 +1530,8 @@ function AgentEditorPage(props: {
                     disabled={busy()}
                     onClick={onDelete()}
                   >
-                    <TrashIcon /> Delete agent
+                    <TrashIcon class="size-3 touch:size-6 shrink-0 pointer-events-none" />{' '}
+                    Delete agent
                   </Button>
                 )}
               </Show>
@@ -1546,7 +1548,7 @@ function AgentEditorPage(props: {
                 <Button
                   type="submit"
                   form="agent-form"
-                  variant="strong"
+                  variant="secondary"
                   size="sm"
                   disabled={!canCreate()}
                 >

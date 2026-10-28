@@ -56,6 +56,7 @@ import clickOutside from '@core/directive/clickOutside';
 import { registerHotkey } from '@core/hotkey/hotkeys';
 import { TOKENS } from '@core/hotkey/tokens';
 import { isMobile } from '@core/mobile/isMobile';
+import { isTouchDevice } from '@core/mobile/isTouchDevice';
 import { blockHotkeyScopeSignal } from '@core/signal/blockElement';
 import { blockEditPermissionEnabledSignal } from '@core/signal/load';
 import { useIsDocumentOwner } from '@core/signal/permissions';
@@ -114,6 +115,7 @@ import { useNavigate } from '@solidjs/router';
 import { useQuery, useQueryClient } from '@tanstack/solid-query';
 import {
   Button,
+  ButtonGroup,
   CopyButton,
   cn,
   Dropdown,
@@ -479,7 +481,7 @@ function TeamAccessSection(props: { teamShare: TeamShareControls }) {
       </div>
       <Dropdown>
         <Dropdown.Trigger
-          variant="outline"
+          variant="secondary"
           aria-label="Team access"
           class="min-w-16.75 py-1 pl-2 pr-1 flex items-center gap-1"
         >
@@ -611,7 +613,7 @@ function LinkSharingControls(props: LinkSharingControlsProps) {
                 setPermissions={props.setLinkShareAccessLevel}
               />
             </div>
-            <Button variant="outline" onClick={props.copyLink}>
+            <Button variant="secondary" onClick={props.copyLink}>
               <CopyIcon class="size-4" />
               <span>Copy Link</span>
             </Button>
@@ -810,9 +812,9 @@ function MobileShareDrawer(props: MobileShareDrawerProps) {
             </div>
             <Show when={effectiveActiveTab() === 'share' && props.canForward}>
               <Button
-                variant="ghost"
+                variant="primary"
                 size="sm"
-                class="shrink-0 ml-2 pl-2 disabled:text-ink-muted text-accent"
+                class="shrink-0 ml-2"
                 disabled={
                   (forwardRef()?.getSelectedOptions().length ?? 0) === 0
                 }
@@ -886,7 +888,7 @@ function MobileShareDrawer(props: MobileShareDrawerProps) {
             </Show>
             <Show when={!props.canForward}>
               <div class="px-4 py-3">
-                <Button variant="outline" onClick={props.copyLink}>
+                <Button variant="secondary" onClick={props.copyLink}>
                   <CopyIcon class="size-4" />
                   <span>Copy Link</span>
                 </Button>
@@ -1922,7 +1924,7 @@ export function ShareModal(props: ShareModalProps) {
                   </Show>
                   <Show when={!canForward()}>
                     <div class="flex justify-end px-4 py-3">
-                      <Button variant="outline" onClick={copyLink}>
+                      <Button variant="secondary" onClick={copyLink}>
                         <CopyIcon class="size-4" />
                         <span>Copy Link</span>
                       </Button>
@@ -2212,6 +2214,7 @@ export function ShareTrigger(props: {
   blockType?: ShareBlockType;
   hotkeyScope?: string;
   copyLink?: () => void;
+  size?: 'sm' | 'md';
 }) {
   const isAuthenticated = useIsAuthenticated();
   const inBlock = isInBlock();
@@ -2332,17 +2335,22 @@ export function ShareTrigger(props: {
       sharePermission.teamShareAccessLevel
     );
   });
+  const iconSize = () =>
+    isTouchDevice() || props.size === 'md' ? 'icon-md' : 'icon-sm';
 
   return (
-    <HeaderActionGroup label="Sharing">
+    <HeaderActionGroup label="Sharing" size={props.size}>
       <div
         ref={requests.ref}
-        class="flex items-center touch:gap-1"
+        class="flex items-stretch touch:items-center touch:gap-1"
         onPointerEnter={warmShareDialog}
         onFocusIn={warmShareDialog}
       >
-        <Tooltip
-          label={
+        <HeaderActionButton
+          grouped
+          size={isTouchDevice() ? undefined : props.size}
+          label="Share"
+          tooltip={
             shareStatus()?.tooltip ??
             (blockType() === 'agent'
               ? 'Share agent session'
@@ -2352,32 +2360,29 @@ export function ShareTrigger(props: {
                   ? 'This item has been shared with you.'
                   : `Share ${blockType()}`)
           }
-        >
-          <HeaderActionButton
-            label="Share"
-            icon={
-              <ShareRequestIcon count={requests.count()}>
-                <IconShared class="size-4" />
-              </ShareRequestIcon>
+          icon={
+            <ShareRequestIcon count={requests.count()}>
+              <IconShared class="size-4" />
+            </ShareRequestIcon>
+          }
+          onClick={() => {
+            if (!isAuthenticated()) {
+              openLoginModal();
+            } else {
+              analytics.track('share_menu_open', { blockType: blockType() });
+              requests.open();
             }
-            onClick={() => {
-              if (!isAuthenticated()) {
-                openLoginModal();
-              } else {
-                analytics.track('share_menu_open', { blockType: blockType() });
-                requests.open();
-              }
-            }}
-          />
-        </Tooltip>
+          }}
+        />
 
         <CopyButton
+          as={ButtonGroup.Button}
           variant="ghost"
           tooltip="Copy Share Link"
-          size="icon-md"
+          size={iconSize()}
           onClick={ShareLinkAction().action}
         >
-          <Dynamic component={ShareLinkAction().icon} class="size-3.5!" />
+          <Dynamic component={ShareLinkAction().icon} class="size-3.5" />
         </CopyButton>
       </div>
     </HeaderActionGroup>
@@ -2482,7 +2487,7 @@ export function ShareOptions(props: {
   return (
     <Dropdown modal={false} open={isOpen()} onOpenChange={setIsOpen}>
       <Dropdown.Trigger
-        variant="outline"
+        variant="secondary"
         disabled={props.disabled}
         class={`min-w-16.75 py-1 pl-2 pr-1 flex items-center gap-1 ${props.noBorder ? 'border-0 sm:border' : ''}`}
         on:keydown={(e: KeyboardEvent) => {

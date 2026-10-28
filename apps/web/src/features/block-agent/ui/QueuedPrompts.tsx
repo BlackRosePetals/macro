@@ -242,9 +242,9 @@ function QueuedRow(props: QueuedRowProps) {
           </Show>
           <Show when={props.onSteer}>
             <Button
+              aria-label="Steer"
               variant="ghost"
               size="xs"
-              label="Steer"
               tooltip="Interrupt the current turn and send this message next"
               disabled={props.disabled}
               onClick={() => props.onSteer?.()}
@@ -254,9 +254,10 @@ function QueuedRow(props: QueuedRowProps) {
             </Button>
           </Show>
           <Button
+            aria-label="Remove queued message"
+            tooltip="Remove queued message"
             variant="ghost"
             size="icon-sm"
-            label="Remove queued message"
             disabled={props.disabled}
             onClick={() => props.onRemove()}
             class="shrink-0"
