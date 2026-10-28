@@ -19,7 +19,6 @@ import {
   updatePipelineSharePermissions,
   updatePipelineTeamShare,
 } from '@app/features/crm/sharing-adapter';
-import { projectRouteId } from '@app/features/projects/core/route';
 import { useAnalytics } from '@app/lib/analytics/analytics-context';
 import { useFeatureFlag } from '@app/lib/analytics/posthog';
 import { useChannelParticipants } from '@channel/use-channel-participants';
@@ -181,11 +180,7 @@ type ShareBlockType = BlockName | BlockAlias | 'initiative' | 'external_chat';
 function shareUrl(type: ShareBlockType, id: string): string {
   if (type === 'external_chat')
     return buildSimpleEntityUrl({ type: 'external/whatsapp', id });
-  if (type !== 'initiative') return buildSimpleEntityUrl({ type, id });
-  return buildSimpleEntityUrl({
-    type: 'component',
-    id: projectRouteId({ id, section: 'overview' }),
-  });
+  return buildSimpleEntityUrl({ type, id });
 }
 
 /**
