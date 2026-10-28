@@ -382,7 +382,7 @@ the shimmer.
   pressed; runs of routines set to **Show runs** are always listed. Every
   routine run carries the same clock icon after its age. The list starts
   without hidden runs each time the Agents view opens.
-- The agent composer's **+ (Add)** menu offers **Add photos & files**,
+- The agent composer's **+ (Add)** menu offers **Add photos**, **Add files**,
   **Add from library** (`@` references), and **Use a skill** (`/`; sessions show
   **Skills & commands**). Desktop uses a scrollable menu; phones use a bottom
   sheet with the same actions. Selecting a reference or skill restores editor
@@ -1342,8 +1342,8 @@ mention only notifies people who could already open it.
 In Home, a new Agents conversation, and an existing agent session, files can be
 attached to a prompt three ways: drop them anywhere on the composer (a
 "Drop files here to send them to the agent" overlay appears), paste them from the
-clipboard, or use the paperclip **`Attach files`** button. Every file uploads to the
-static file service and shows as a chip above the text (media thumbnails, document
+clipboard, or choose **Add photos** / **Add files** from the **+ (Add)** menu.
+Every file uploads to the static file service and shows as a chip above the text (media thumbnails, document
 pills with a remove `×`); **Send** is disabled while an upload is pending. The agent
 receives each file as an ACP `resource_link` (a URL it can fetch) after the prompt text,
 and the sent prompt renders its files in the transcript (image thumbnails and
@@ -2019,7 +2019,12 @@ uploaded images as normalized inline content, including attachments from earlier
 turns. Test an image-only prompt and a text-plus-image prompt, then follow up
 without reattaching the image.
 
-Text-only model choices show a description and a composer warning. Pasted,
+Text-only model choices show a description. In the composer’s + menu, only
+**Add photos** is dimmed, with a tooltip beside the row using the model’s house
+name (`"<Model> doesn't support images"`) on hover or arrow-key focus; selecting
+it does nothing and leaves the menu open. Touch shows the reason as the row’s
+second line instead. **Add files** remains available without a tooltip, and no
+warning banner is shown. Pasted,
 dropped, and picked images should be refused before upload; document attachments
 and text should still work. If an image is already attached when switching to a
 text-only model, keep the draft and image chip but disable Send until the image
