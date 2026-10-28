@@ -102,7 +102,7 @@ checks project ranking and insertion on desktop and phone.
 
 Channel composer draft persistence has a backend-free browser regression:
 `bunx playwright test --config src/features/channel/Input/browser-test/playwright.config.ts`.
-It types a draft, remounts the composer over it, and checks the blank lines survive.
+It checks draft blank lines across remounts and pending sends on desktop and phone: clear immediately, restore failed sends, and preserve a new draft typed during delivery.
 
 Block formatting passes a forward copy of the selection to Lexical's
 `$setBlocksType` so backward selections include their first paragraph and keep
