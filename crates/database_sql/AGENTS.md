@@ -56,6 +56,9 @@ uses the wasm build directly).
 - The grammar is the contract: a statement this crate rejects must never reach
   `databases`' ops API some other way.
 
+- Preserve `Catalog.scope` through the browser wire boundary; it gives the selected
+  database precedence for unqualified table names without hiding qualified joins.
+
 ## Related
 
 - Skill: `database-core` · Rules: `.agents/rules/rust/architecture.md`
