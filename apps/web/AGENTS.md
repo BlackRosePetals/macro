@@ -269,8 +269,8 @@ resolved session ID; keep the existing `AgentSessionProvider` subscription to
 - Email draft reads compare server generations before choosing cached delivery state over a restored working copy; only a definitive first-submission rejection permits local send recovery without server cancellation.
 - Compose settings pages with `features/settings/primitives.tsx` so section headings,
   raised composer cards (`SettingsSurface`), row spacing, and control shapes stay
-  consistent; never hand-build a flat `bg-ink/*` card. Keep Integrations on the
-  shared page width and side padding.
+  consistent; never hand-build a flat `bg-ink/*` card. Integrations is the one
+  settings page that spans nearly the full width, for its list columns.
 - Preserve email signature HTML through import, preview, and source editing;
   mount Quill only for explicit Rich text editing and confirm custom-layout
   conversion. Keep the settings and composer preview on the same sanitized HTML
@@ -280,8 +280,10 @@ resolved session ID; keep the existing `AgentSessionProvider` subscription to
   so account-list remounts cannot leave an already-cleared draft behind. Offer
   Gmail signature import only when the inbox provider is `GMAIL`, regardless of
   its email domain; keep shared signature instructions provider-neutral.
-- Keep personal accounts and agent tool connections together in Settings → Integrations;
-  preserve `agent-connections` as an alias for existing links.
+- Keep personal accounts, team imports and agent tool connections together in
+  Settings → Integrations: one searchable list row per integration, styled like
+  the Drive/Tasks lists, custom MCP servers then connected ones first,
+  described by what each does in Macro; preserve `agent-connections` and `team-connections` as aliases for existing links.
 - Keep bot setup focused on the token-and-SDK workflow; Agent and Ownership
   controls live under collapsed Advanced settings. See the
   [Bots walkthrough](../../docs/agent-guide/settings.md#bots).
