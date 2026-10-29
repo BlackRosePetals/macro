@@ -1227,10 +1227,13 @@ refresh conservatively. For an empty search, scroll toward the end (or use
 Down); mentions offer **View all** for a category and then load more local pages.
 The @ menu ranks loaded projects and cached document/task matches together
 before choosing preview rows, with the same ranking on desktop and phone.
-Exact and prefix name matches get boosts, task projects get a type boost, and
-viewed recency and shorter names contribute. Empty-query browsing remains
-recency-led; existing People preview slots and phone pinning remain. Tuning lives
-in `MENTION_RANKING_CONFIG` in the mention menu's `utils/mention-ranking.ts`.
+Names equal to the query rank first and names starting with it next; within
+those groups task projects get a type boost, and viewed recency and shorter
+names contribute. Empty-query browsing remains
+recency-led; existing People preview slots and phone pinning remain. Name-match
+tuning is shared with Cmd+K in `NAME_MATCH_RANKING` (`@core/util/freshSort`);
+recency weights and type boosts live in `MENTION_RANKING_CONFIG` in the mention
+menu's `utils/mention-ranking.ts`.
 Broader cache/server matches remain reachable even when the local fuzzy matcher
 would omit them. To verify, type `@task` with a project named `Task planning`
 and many recent tasks containing “task”: the project should appear in the first
@@ -1315,8 +1318,14 @@ An empty query prefers when an item was last viewed, falling back to its update
 time; equal timestamps have a stable entity-type and ID order. Typed searches give
 channels (including DMs) the same 3x boost as the main search view, with the menu's
 additional 1.8x DM boost; relevance and viewed recency still order those results.
-This shared ranking also applies to mobile name search. Verify an older matching
-channel stays above recent CRM contacts and agent sessions in All, and remains
+Relevance uses the same name-match ranking as the @ menu: names equal to the
+query come first, then names starting with it, then other matches, and matches
+that are spread out or start late in the name score lower. The channel and DM
+boosts and recency order rows within each group. Verify that typing a project's
+full name puts it above recently viewed documents, tasks, and channels that
+only contain or start with those words. This shared ranking also applies to mobile name search.
+Verify an older matching channel stays above recent CRM contacts and agent
+sessions in All, and remains
 findable in Channels while its cache entry is absent. Refreshing the cache or
 reopening the menu with unchanged data must not reorder results or duplicate a
 channel when its cache entry arrives. Hydration must also refresh ownership,

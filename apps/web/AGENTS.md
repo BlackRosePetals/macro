@@ -122,12 +122,22 @@ upload failure have desktop, phone, and tablet browser coverage:
 Keep the shared uploader from restoring removed attachments or publishing after
 the composer is disposed. The Share button and shortcut use the same upload guard.
 
-Mention menus rank loaded entity sources together with `MENTION_RANKING_CONFIG`
-in `MentionsMenu/utils/mention-ranking.ts`: name relevance, viewed recency,
-brevity, and explicit type/name boosts. Task projects use the `initiative`
-bucket; `project` means a Drive folder. Preserve broader cache/server matches
-and the existing People preview/pinning. The channel browser suite below also
-checks project ranking and insertion on desktop and phone.
+Menus that find entities by typed name (Command-K, mobile name search, @
+mentions) rank with `NAME_MATCH_RANKING` in `@core/util/freshSort`: names equal
+to the query first, then names starting with it, then other matches, with tight
+matches near the start scoring higher. Each menu's recency weights and type
+boosts (Cmd+K's channel and DM boosts) order rows within those groups and never
+lift a row past a better name match. The one exception: Cmd+K then keeps Macro
+users and DMs ahead of CRM contacts across the people positions, whatever their
+match. Tune name relevance there for every menu.
+Name groups and match position use the row's label (`getDisplayName`), so search
+text can add emails, aliases, or command keywords before or after it. Mention
+menus rank loaded entity sources together with `MENTION_RANKING_CONFIG` in
+`MentionsMenu/utils/mention-ranking.ts`: name relevance, viewed recency,
+brevity, and type boosts. Task projects use the `initiative` bucket; `project`
+means a Drive folder. Preserve broader cache/server matches and the existing
+People preview/pinning. The channel browser suite below also checks project
+ranking and insertion on desktop and phone.
 
 Channel composer draft persistence has a backend-free browser regression:
 `bunx playwright test --config src/features/channel/Input/browser-test/playwright.config.ts`.
