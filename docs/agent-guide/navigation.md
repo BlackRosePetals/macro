@@ -313,9 +313,12 @@ trail so the project remains a return destination. The standard side-panel
 toggle shows project properties. Their URLs preserve the selected section on reload;
 discussion links append `~<message-uuid>` to the project's `overview` route.
 Existing `activity` routes open Overview, preserving a target message when present.
-Cmd+K includes a Projects category, authorized project search results, and
-`New project`. Selecting a project opens its overview; Shift-selection opens a
-new split. The global Create menu also offers `Project` (C, then P), including
+Cmd+K includes a Projects category, projects matching a typed All query, and
+`New project`. Projects come from Quick Access like documents and channels:
+the GraphQL cache backfills them in its `initiatives` lane and indexes them for
+local search, so typing never waits on a request and rows stay in place. Cmd+K
+finds only projects the cache or the Quick Access feed has loaded. Selecting a
+project opens its overview; Shift-selection opens a new split. The global Create menu also offers `Project` (C, then P), including
 the full mobile Create sheet. Project opens the same popover host as task creation: a dialog
 on desktop and a bottom drawer on touch. It keeps focus in the project-name
 input, and `Continue editing in split` transfers the current draft. Existing
@@ -1230,9 +1233,9 @@ search cached entities without waiting for a server search. Background hydration
 updates an already-open menu only when a bucket it uses changes. Email/body/tag-only
 hydration must not reread History or the cached channel list; a newly hydrated note
 refreshes History and matching menus, and a channel/DM refreshes channel consumers.
-Ordinary query responses use the same bucket scoping. A project-search response
-that only caches another viewer Soup page must not refresh History, channel lists,
-or unrelated active query pages. Renames, ownership/recency changes, and moves
+Ordinary query responses use the same bucket scoping. A Projects list response
+changes only the `initiative` bucket, so it refreshes menus searching projects but
+not History, channel lists, or unrelated active query pages. Renames, ownership/recency changes, and moves
 between buckets must still appear without retyping in every affected view.
 Older cache runtimes without bucket metadata, mutations, and identity resets
 refresh conservatively. For an empty search, scroll toward the end (or use
