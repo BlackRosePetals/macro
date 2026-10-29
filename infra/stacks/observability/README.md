@@ -77,6 +77,8 @@ packages, configuration, service users, resource limits and startup dependencies
 - `nixos/goalert.nix` and `nixos/goalert/`: GoAlert, its Postgres, backups and
   the Macro Alerts relay (see [On-call paging](#on-call-paging-goalert)).
 - `nixos/alerting.nix`: Grafana alert rules, contact points and routing.
+- `nixos/prod-alerts.nix`: prod alert queries and thresholds, shared by the
+  rules and `nixos/prod-alerts-dashboard.nix`.
 - `nixos/host.nix`: boot dependencies, retained storage and stable service identities.
 
 NixOS modules generate application configuration from Nix attributes. Alloy's
@@ -435,20 +437,27 @@ models. Grafana uses the EC2 role for regional metric reads and publishing to th
 configured alarm SNS topic. Other unprivileged HTTP/ingest services still cannot
 access instance metadata.
 
-`prodRules` in `nixos/alerting.nix` holds the prod CloudWatch rules: macrodb
-memory, swap, load, CPU, connections, replica lag, read latency and storage;
-Redis memory and evictions; SQS queue age. Each is a warning and a critical rule
-in the `Prod` group, reading CloudWatch in Virginia directly. Each has a Datadog
-copy in `infra/stacks/monitoring/monitors/`; keep thresholds and windows in sync
-by hand. Forecasts, anomalies, Database Monitoring, APM and log rules are
-Datadog-only.
+`nixos/prod-alerts.nix` lists the prod CloudWatch alerts: macrodb memory, swap,
+load, CPU, connections, replica lag, read latency and storage; Redis memory and
+evictions; SQS queue age. Each entry holds its query, thresholds, window and
+text once. `nixos/alerting.nix` turns each into a warning and a critical rule in
+the `Prod` group, reading CloudWatch in Virginia directly, and
+`nixos/prod-alerts-dashboard.nix` draws it as one panel with both thresholds on
+the `Prod alerts` dashboard (`/d/prod-alerts`, rows macrodb, Redis and Queues).
+Each rule carries its panel as `__dashboardUid__`/`__panelId__`, so the rule
+view and every notification link to the graph of the metric that fired. Each
+has a Datadog copy in `infra/stacks/monitoring/monitors/`; keep thresholds and
+windows in sync by hand. Forecasts, anomalies, Database Monitoring, APM and log
+rules are Datadog-only.
 
 Every alert posts to the `Macro Alerts` contact point through the loopback
-relay; critical ones renotify hourly, others every four hours. Critical alerts
-of rules with `pages = true` also go to the `GoAlert` contact point over
-loopback. GoAlert owns the alert from there: it opens, acknowledges and closes
-it, and its escalation posts each change to the channel. Their Datadog copies
-only notify, so an incident pages once.
+relay; critical ones renotify hourly, others every four hours. Grafana's
+`default.message` lists each alert's annotations (summary, description,
+runbook) and a `Panel:` link to its graph, opened an hour before the alert
+started. Critical alerts of rules with `pages = true` also go to the `GoAlert`
+contact point over loopback. GoAlert owns the alert from there: it opens,
+acknowledges and closes it, and its escalation posts each change to the
+channel. Their Datadog copies only notify, so an incident pages once.
 
 The dev rules below keep their own route to `Macro team email`.
 
@@ -479,10 +488,10 @@ AMI; a schema-5 image cannot boot schema-6 user data.
 
 GoAlert is the source of truth for open alerts: Grafana sends it critical
 alerts, and on-call engineers acknowledge or close them in its UI at
-`https://oncall.macro-internal.com`. It runs on this host so paging keeps working
-while production, its database or Macro itself is down. Today it pages by
-posting to the Macro Alerts channel; phone paging (Twilio), Google login and a
-rotation are follow-ups.
+`https://oncall.macro-internal.com`, signing in with Google. It runs on this host
+so paging keeps working while production, its database or Macro itself is down.
+Today it pages by posting to the Macro Alerts channel; phone paging (Twilio) and
+a rotation are follow-ups.
 
 - `nixos/goalert/package.nix` builds GoAlert from source with `buildGoModule`,
   embedding its web UI. Bump `version` and the hashes together.
@@ -504,6 +513,10 @@ rotation are follow-ups.
   `/health`, `/api/v2/generic/incoming` and `/api/v2/heartbeat/` are reachable
   without a session (GoAlert checks the integration key); other inbound
   integrations return 404. The rest is GoAlert's UI behind its login.
+- Login is Google OIDC with Grafana's OAuth client, whose redirect URIs include
+  `https://oncall.macro-internal.com/api/v2/identity/providers/oidc/callback`.
+  GoAlert cannot restrict OIDC to a domain, so that client must keep the
+  Internal audience. The basic-auth `admin` login is the break-glass account.
 - The ALB sends the on-call host to its own target group, health-checked at
   `/goalert-healthz`. Alarm `observability-goalert` publishes to `alarmTopicArn`
   when it fails, so a GoAlert outage is reported without GoAlert.
