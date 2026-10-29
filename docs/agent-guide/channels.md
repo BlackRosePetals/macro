@@ -43,6 +43,18 @@ the following paragraph leaves that following paragraph unchanged.
 The backend-free quote check is documented in the Markdown browser-test README
 linked above.
 
+## Query document ownership
+
+Switch between Home and Channels repeatedly, including after backgrounding the
+native app. Conversation queries must remain reusable: their operation names and
+serialized GraphQL documents must stay consistent. The backend-free desktop and
+iPhone WebKit regression is
+`bunx playwright test --config src/lib/urql-solid/browser-test/playwright.config.ts`
+from `apps/web`.
+
+Data and loading state publish together, so automatic pagination observes the
+new page cursor before deciding whether to request another page.
+
 ## Empty direct messages
 
 An empty human DM shows the centered conversations illustration and “Say hello”

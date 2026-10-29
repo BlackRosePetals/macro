@@ -146,6 +146,12 @@ It checks draft blank lines across remounts, that a sent message renders its
 lines with the spacing the draft showed, and pending sends on desktop and phone: clear immediately, restore failed sends, and preserve a new draft typed during delivery.
 It also pastes a Macro link and Markdown into a code block, which must keep both as literal text.
 
+Shared GraphQL query metadata has a backend-free desktop and iPhone WebKit regression:
+`bunx playwright test --config src/lib/urql-solid/browser-test/playwright.config.ts`.
+Publish data and metadata atomically. Reconcile result data only; replace
+operation metadata so shared documents,
+cached query text, and operation names remain consistent across query changes.
+
 Block formatting passes a forward copy of the selection to Lexical's
 `$setBlocksType` so backward selections include their first paragraph and keep
 the editor's actual selection direction. The Markdown core browser suite's
