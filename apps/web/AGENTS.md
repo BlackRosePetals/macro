@@ -41,6 +41,10 @@ beside a scrolling editor whose selection runs past its visible bottom
 (`clipToVisible`), have a backend-free browser regression:
 `bunx playwright test --config src/lib/core/component/LexicalMarkdown/directive/browser-test/playwright.config.ts`.
 
+Composer `/` menus list Connections between Skills and Pull requests. Keep native
+and hosted providers aligned with `mcp_select::select_connections`, prefer native
+credentials per provider, and preserve editor focus on pointer and touch selection.
+
 Undo in a large collaborative Markdown document (Loro undo, mirror, reconcile,
 caret mapping) has a backend-free timing regression:
 `bunx playwright test --config src/lib/core/component/LexicalMarkdown/collaboration/browser-test/playwright.config.ts`.

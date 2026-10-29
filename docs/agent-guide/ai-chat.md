@@ -570,7 +570,14 @@ the shimmer.
   through other hints. Clearing a draft restores the same hint.
   Coding agents show **Describe what you want to build**; phones keep the short
   **Message Macro AI** placeholder. Type `@` for
-  mentions and `/` for skills.
+  mentions and `/` for skills and connections. The **Connections** section lists enabled native
+  servers and Pipedream connectors, preferring the native connection when both
+  provide the same tools. Selecting one inserts its name as plain text
+  (`Linear MCP `) to steer the model toward those tools. Loading and failed
+  connection reads have distinct states; disabled connections are omitted.
+  See the slash menu on [desktop](media/ai-chat/slash-connections-desktop.png)
+  and [phone](media/ai-chat/slash-connections-phone.png).
+
   Check `/` with the Android software keyboard too: the skills menu should open
   and filter while typing, without sending the draft.
 - Opening a conversation updates the URL based on that conversation's kind:
@@ -1334,10 +1341,10 @@ An agent session is `/app/agent/<uuid>`. The composer placeholder is
 **`Message the agent, @mention anything`**. Creating one (`c` then `a`, or
 `Create` → `Agent`) leaves that composer focused — on mobile that is the same
 Create-menu `triggerFocusInput` as chat, so the keyboard opens. Type `/` to
-open sections for **Skills**, **Pull requests**, and **Commands**. Skills are
-available even before the connected agent advertises commands. Select a skill
-to insert its mention, a pull request to reference it, or a harness command
-to insert `/name` as text. Search filters all sections; arrow keys move across
+open sections for **Skills**, **Connections**, **Pull requests**, and **Commands**.
+Skills are available even before the connected agent advertises commands.
+Select a skill to insert its mention, a connection to name it as text, a pull
+request to reference it, or a harness command to insert `/name` as text. Search filters all sections; arrow keys move across
 sections and Enter selects the highlighted item. Saved skills have an **Edit**
 button that opens their document editor; skills you own also have **Delete**,
 which opens the usual deletion confirmation. Built-in skills have no edit or
