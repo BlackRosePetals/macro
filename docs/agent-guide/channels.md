@@ -447,13 +447,15 @@ event without attendees creates the event right away (unlike AI chat, where crea
 for the user to confirm a composer card). For an event with attendees the bot is prompted to
 ask for confirmation in the thread first, since Google sends the invitations the moment the
 event is created — no invitation goes out from the initial request. It cannot draft or send
-email at all. When that reply links something the rest of the channel may not already open
-(a calendar event, document, or similar chip), it ends by asking "Do you want me to share this
-with the members of the channel?" A yes in the thread — "yes", "please", "go ahead" — is
-enough: the bot replies "Okay." and grants current members access. It does not share before
-that yes unless the request already asked it to. A decline is not shared. Private and
-confidential calendar events stay unshared, and a calendar event can only be shared by
-someone who holds it on their own calendar. The bot's prompt carries the current date and time in the mentioning user's
+email at all. A bot or agent reply posted for a person shares, as that person, the linked items
+(chips or attachments) that the replying bot created for them while answering: those with a
+`created` activity row by that bot on the person's behalf since the person's latest message in
+the thread before the reply. Activity arrives asynchronously, so missing rows are re-checked
+after 5 and 30 seconds. Existing items it links, plain URLs, and bot posts with no person
+behind them share nothing. The bot never asks whether to share; it calls `ShareWithChannel` when asked to
+share an existing item. Private and confidential calendar events stay unshared, and a
+calendar event can only be shared by someone who holds it on their own calendar.
+The bot's prompt carries the current date and time in the mentioning user's
 own time zone (their primary calendar's), so it resolves relative times ("tomorrow at 4",
 "EOD") without asking; when no calendar is connected the prompt falls back to UTC and the
 bot asks before scheduling a specific clock time. Within the rollout, `@Macro` — plus
