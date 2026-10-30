@@ -1,4 +1,5 @@
 import { EmailAttachmentPill } from '@app/features/email-message/components/attachment-pill';
+import { reloadApp } from '@app/observability/reload';
 import { useMacroMentionLinkResolver } from '@components/app/split-layout/split-router/mention-links';
 import { FileDropOverlay } from '@core/component/FileDropOverlay';
 import { buildConfig } from '@core/component/LexicalMarkdown/builder/MarkdownConfigBuilder';
@@ -240,6 +241,15 @@ function LoadedReplyInputView(props: ReplyInputViewProps) {
     setDraftBackMenuOpen(false);
     props.mobileCompose?.onClose();
   };
+  const reloadForRecovery = async () => {
+    try {
+      await state.flushLocal();
+    } catch (error) {
+      composeContext.notices.reportError(error);
+      return;
+    }
+    reloadApp('user_recovery');
+  };
   onMount(() => props.mobileCompose?.registerClose(requestClose));
   const isMobileCompose = () => props.mobileCompose !== undefined;
   const composePortalScope = () =>
@@ -474,6 +484,7 @@ function LoadedReplyInputView(props: ReplyInputViewProps) {
       busy={sync.busy()}
       error={sync.error()}
       onRetry={sync.retry}
+      onReload={() => fireAndForget(reloadForRecovery(), 'email-compose')}
       onKeepEditing={sync.keepEditing}
     />
   );
